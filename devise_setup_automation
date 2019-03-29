@@ -1,0 +1,26 @@
+#!/bin/bash
+# Devise setup automation script
+FILE="$1/Gemfile"
+/bin/cat <<EOM >>$FILE
+gem 'devise'
+EOM
+echo "********Devise gem added to bundle**********"
+cd $1
+bundle install
+echo "********Devise gem installed**********"
+rails generate devise:install
+echo "********Devise files added**********"
+DEVELOPMENT_ENV_FILE="$1/config/environments/development.rb"
+sed -i '/Rails.application.configure do/a  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }' $DEVELOPMENT_ENV_FILE
+echo "******Development environment configuration complete*******"
+APPLICATION_LAYOUT_FILE="$1/app/views/layouts/application.html.erb"
+/bin/cat <<EOM >>$APPLICATION_LAYOUT_FILE
+EOM
+sed -i '/<body>/a <p class="notice"><%= notice %></p><p class="alert"><%= alert %></p>' $APPLICATION_LAYOUT_FILE
+echo "********Flash messages added to application.html.erb**********"
+echo " Ensure you have defined root_url to *something* in your config/routes.rb."
+echo "     For example:"
+echo '       root to: "home#index" '
+******Devise installation and basic setup complete*******
+
+
